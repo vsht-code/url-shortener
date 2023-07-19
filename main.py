@@ -1,8 +1,9 @@
 from urllib.parse import urlparse
 import requests
+import os
 
 
-api_token = '29da32489aa26561114e4ecd78af19700f50028c'
+api_token = os.getenv("TOKEN")
 
 
 url = input()
