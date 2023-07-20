@@ -5,11 +5,6 @@ import os
 import argparse
 
 
-load_dotenv()
-
-api_token = os.getenv("TOKEN")
-
-
 def shorten_link(token, url):
     response = requests.post(
         'https://api-ssl.bitly.com/v4/bitlinks',
@@ -36,23 +31,26 @@ def is_bitlink(token, url):
     return response.ok
 
 
-parser = argparse.ArgumentParser(
-    description='Программа для сокращения ссылок '
-    'или подсчёта количества переходов по bitlink')
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='Программа для сокращения ссылок '
+        'или подсчёта количества переходов по bitlink')
 
-parser.add_argument('url', help='Введите ссылку или bitlink:')
-args = parser.parse_args()
-url = args.url
+    parser.add_argument('url', help='Введите ссылку или bitlink:')
+    args = parser.parse_args()
+    url = args.url
 
-parsed_bitlink = urlparse(url)
+    parsed_bitlink = urlparse(url)
 
+    load_dotenv()
+    api_token = os.getenv("TOKEN")
 
-try:
-    if is_bitlink(api_token, parsed_bitlink):
-        total_clicks = count_clicks(api_token, parsed_bitlink)
-        print(total_clicks)
-    else:
-        bitlink = shorten_link(api_token, url)
-        print(bitlink)
-except requests.exceptions.HTTPError:
-    exit('Вы ввели неверную ссылку!')
+    try:
+        if is_bitlink(api_token, parsed_bitlink):
+            total_clicks = count_clicks(api_token, parsed_bitlink)
+            print(total_clicks)
+        else:
+            bitlink = shorten_link(api_token, url)
+            print(bitlink)
+    except requests.exceptions.HTTPError:
+        exit('Вы ввели неверную ссылку!')
